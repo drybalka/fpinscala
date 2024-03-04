@@ -1,5 +1,6 @@
 package fpinscala.exercises.testing
 
+
 import fpinscala.answers.testing.exhaustive.Gen as ExhGen
 import fpinscala.answers.testing.exhaustive.Gen.`**`
 import fpinscala.exercises.common.Common.*
@@ -10,23 +11,23 @@ import fpinscala.exercises.testing.Gen
 import fpinscala.exercises.testing.Gen.*
 import fpinscala.exercises.testing.Prop.*
 
+
 class GenSuite extends PropSuite:
   private val shortSample = 1000
   private val genRNG: ExhGen[RNG] = ExhGen.int.map(i => RNG.Simple(i.toLong))
 
 // Gen tests: Before using these tests (starting from Exercise 8.4),
 // add the next block to fpinscala.exercises.testing.Gen.scala file
-/* ToDo: fpinscala.exercises.testing.Gen.scala file's block
+  /* ToDo: fpinscala.exercises.testing.Gen.scala file's block
 opaque type Gen[+A] = State[RNG, A]
 
 object Gen:
   extension [A](self: Gen[A])
     // We should use a different method name to avoid looping (not 'run')
     def next(rng: RNG): (A, RNG) = self.run(rng)
-*/
+   */
 
 // Gen tests:
-/*
   test("Exercise 8.4")(ExhGen.int ** ExhGen.int ** genRNG):
     case n ** m ** rng =>
       val (start, stopExclusive) = if n < m then (n, m) else (m, n)
@@ -43,9 +44,16 @@ object Gen:
 
   test("Exercise 8.5, boolean + listOfN")(genShortNumber ** genRNG):
     case n ** rng0 =>
-      val (randomBooleanList, rng1) = Gen.boolean.listOfN(shortSample).next(rng0)
-      assert(randomBooleanList.contains(true), "'Gen.boolean' should not generate only 'false' values")
-      assert(randomBooleanList.contains(false), "'Gen.boolean' should not generate only 'true' values")
+      val (randomBooleanList, rng1) =
+        Gen.boolean.listOfN(shortSample).next(rng0)
+      assert(
+        randomBooleanList.contains(true),
+        "'Gen.boolean' should not generate only 'false' values"
+      )
+      assert(
+        randomBooleanList.contains(false),
+        "'Gen.boolean' should not generate only 'true' values"
+      )
 
       val (randomBooleanList1, _) = Gen.boolean.listOfN(n).next(rng1)
       assertEquals(randomBooleanList1.length, n)
@@ -67,8 +75,14 @@ object Gen:
       val genUnion = Gen.union(Gen.unit(n), Gen.unit(m))
       val genUnionList = genUnion.listOfN(shortSample)
       val (unionList, _) = genUnionList.next(rng)
-      assert(unionList.count(_ == n) >= shortSample / 3, "Values should be extracted with approximately equal likelihood")
-      assert(unionList.count(_ == m) >= shortSample / 3, "Values should be extracted with approximately equal likelihood")
+      assert(
+        unionList.count(_ == n) >= shortSample / 3,
+        "Values should be extracted with approximately equal likelihood"
+      )
+      assert(
+        unionList.count(_ == m) >= shortSample / 3,
+        "Values should be extracted with approximately equal likelihood"
+      )
 
   test("Exercise 8.8")(ExhGen.int ** ExhGen.int ** genRNG):
     case n ** m ** rng =>
@@ -84,19 +98,29 @@ object Gen:
 
       val genUnion2 = Gen.weighted((Gen.unit(n), 0.5), (Gen.unit(m), 0.5))
       val (unionList2, _) = genUnion2.listOfN(shortSample).next(rng)
-      assert(unionList2.count(_ == n) >= shortSample / 3, "g1 and g2 have the same weight")
-      assert(unionList2.count(_ == m) >= shortSample / 3, "g1 and g2 have the same weight")
+      assert(
+        unionList2.count(_ == n) >= shortSample / 3,
+        "g1 and g2 have the same weight"
+      )
+      assert(
+        unionList2.count(_ == m) >= shortSample / 3,
+        "g1 and g2 have the same weight"
+      )
 
       val genUnion3 = Gen.weighted((Gen.unit(n), 0.33), (Gen.unit(m), 0.67))
       val (unionList3, _) = genUnion3.listOfN(shortSample).next(rng)
-      assert(unionList3.count(_ == n) >= shortSample / 5, "g2 is twice as common as g1")
-      assert(unionList3.count(_ == m) >= shortSample / 2, "g2 is twice as common as g1")
-*/
-
+      assert(
+        unionList3.count(_ == n) >= shortSample / 5,
+        "g2 is twice as common as g1"
+      )
+      assert(
+        unionList3.count(_ == m) >= shortSample / 2,
+        "g2 is twice as common as g1"
+      )
 
 // Prop tests: Before using these tests (starting from Exercise 8.9),
 // add the next block to fpinscala.exercises.testing.Gen.scala file
-/* ToDo: fpinscala.exercises.testing.Gen.scala file's block
+  /* ToDo: fpinscala.exercises.testing.Gen.scala file's block
 object Prop:
   extension (self: Prop)
     def check(
@@ -105,10 +129,10 @@ object Prop:
                rng: RNG = RNG.Simple(System.currentTimeMillis)
              ): Result =
       self(maxSize, testCases, rng)
-*/
+   */
 
 // Prop tests
-/*
+  /*
   import fpinscala.exercises.testing.Prop.Result.*
 
   private val propPassed = Prop((n, rng) => Passed)
@@ -125,21 +149,19 @@ object Prop:
     assertEquals((propPassed || propFalsified).check(), Passed)
     assertEquals((propFalsified || propPassed).check(), Passed)
     assert((propFalsified || propFalsified).check().isFalsified)
-*/
-
+   */
 
 // SGen tests: Before using these tests (starting from Exercise 8.10),
 // add the next block to fpinscala.exercises.testing.Gen.scala file
-/* ToDo: fpinscala.exercises.testing.Gen.scala file's block
+  /* ToDo: fpinscala.exercises.testing.Gen.scala file's block
 object SGen:
   def apply[A](f: Int => Gen[A]): SGen[A] = f
 
   extension [A](self: SGen[A])
     def apply(n: Int): Gen[A] = self(n)
-*/
+   */
 
 // SGen tests
-/*
   test("Exercises 8.10 + 8.11")(ExhGen.int ** genRNG):
     case n ** rng0 =>
       val sGenA = SGen(Gen.unit(_))
@@ -160,4 +182,3 @@ object SGen:
     case n ** rng =>
       val (randomNonEmptyList, _) = Gen.boolean.nonEmptyList(n).next(rng)
       assert(randomNonEmptyList.nonEmpty)
-*/
